@@ -1,0 +1,45 @@
+﻿@page "/"
+@using System.Globalization
+@using BlazorTLang
+@using Client.Localization
+
+@inject CultureManager<ILanguage> CultureManager;
+@inject ILanguage Language
+
+<PageTitle>Home</PageTitle>
+
+<h1>@Language.Hello, @Language.DisplayName!</h1>
+
+@Language.WelcomeToYourApp.
+
+<hr/>
+
+<InputSelect id="department" @bind-Value="_cultureCode" @bind-Value:after="CultureChanged">
+    @foreach (var culturePack in CultureManager.CulturePacks)
+    {
+        <option value="@culturePack.CultureCode">@culturePack.DisplayName</option>
+    }
+</InputSelect>
+
+<hr/>
+
+<ol>
+    @foreach (var culturePack in CultureManager.CulturePacks)
+    {
+        <li><small>@culturePack.CultureCode</small> - @culturePack.DisplayName - <span>@culturePack.Hello</span></li>
+    }
+</ol>
+
+@code {
+    private string _cultureCode = string.Empty;
+    
+    protected override void OnInitialized()
+    {
+        _cultureCode = Language.CultureCode;
+    }
+
+    private void CultureChanged()
+    {
+        CultureManager.Culture = CultureInfo.GetCultureInfo(_cultureCode);
+    }
+}

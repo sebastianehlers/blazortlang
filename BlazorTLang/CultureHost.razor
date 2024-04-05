@@ -1,0 +1,41 @@
+@using System.Globalization
+
+@typeparam T where T : class, ICulturePack
+
+@inject CultureManager<T> CultureManager
+
+@ChildContent
+
+@code {
+    [Parameter]
+    public string? DefaultCulture { get; set; }
+    
+    [Parameter]
+    public required RenderFragment ChildContent { get; set; }
+
+    private CultureInfo? _culture;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _culture = CultureInfo.GetCultureInfo(DefaultCulture ?? "en-US"); //TODO Read from localstorage or similar
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            _culture = CultureInfo.GetCultureInfo("en-US");
+        }
+
+        CultureManager.Culture = _culture;
+        CultureManager.CultureChanged += async (_, _) => await CultureChanged(CultureManager.Culture);
+    }
+
+    private async Task CultureChanged(CultureInfo newCulture)
+    {
+        _culture = newCulture;
+        StateHasChanged();
+        //TODO Store in localstorage or similar
+    }
+
+}

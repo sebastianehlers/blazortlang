@@ -1,0 +1,16 @@
+@using Client.Localization
+@inherits LayoutComponentBase
+
+@inject ILanguage Language
+
+<div class="page">
+    <div class="sidebar">
+        <a href="/">@Language.Home</a>
+    </div>
+
+    <main>
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>
